@@ -2,7 +2,7 @@
 # Author: Generated for WordPress Docker Setup
 # Usage: make [target]
 
-.PHONY: help setup up down build rebuild logs clean status monitor resources install-wp backup restore
+.PHONY: help setup up down build rebuild logs clean status monitor resources install-wp backup restore phpmyadmin
 
 # Default target
 .DEFAULT_GOAL := help
@@ -98,6 +98,10 @@ logs-mysql: ## Show MySQL logs
 	@echo "$(BLUE)📋 Showing MySQL logs...$(NC)"
 	@$(COMPOSE_CMD) logs -f mysql
 
+logs-phpmyadmin: ## Show phpMyAdmin logs
+	@echo "$(BLUE)📋 Showing phpMyAdmin logs...$(NC)"
+	@$(COMPOSE_CMD) logs -f phpmyadmin
+
 status: ## Check status of all services
 	@echo "$(BLUE)📊 Service Status:$(NC)"
 	@$(COMPOSE_CMD) ps
@@ -120,6 +124,7 @@ info: ## Show connection information
 	@echo "$(GREEN)🌐 Access Information:$(NC)"
 	@echo "  $(BLUE)Main WordPress site:$(NC)     http://local-wp.com"
 	@echo "  $(BLUE)Secondary WordPress site:$(NC) http://local-wp.com/v2"
+	@echo "  $(BLUE)phpMyAdmin:$(NC)               http://localhost:8080"
 	@echo ""
 	@echo "$(GREEN)📋 Database Credentials:$(NC)"
 	@echo "  $(BLUE)Host:$(NC)     mysql"
@@ -151,9 +156,27 @@ shell-mysql: ## Access MySQL container shell
 	@echo "$(BLUE)🐚 Accessing MySQL container...$(NC)"
 	@$(COMPOSE_CMD) exec mysql bash
 
+shell-phpmyadmin: ## Access phpMyAdmin container shell
+	@echo "$(BLUE)🐚 Accessing phpMyAdmin container...$(NC)"
+	@$(COMPOSE_CMD) exec phpmyadmin sh
+
 mysql-cli: ## Access MySQL command line
 	@echo "$(BLUE)💾 Connecting to MySQL...$(NC)"
 	@$(COMPOSE_CMD) exec mysql mysql -u wordpress -p
+
+phpmyadmin: ## Open phpMyAdmin in browser
+	@echo "$(BLUE)🌐 Opening phpMyAdmin...$(NC)"
+	@echo "$(GREEN)📋 phpMyAdmin Access:$(NC)"
+	@echo "  $(BLUE)URL:$(NC)      http://localhost:8080"
+	@echo "  $(BLUE)Username:$(NC) wordpress (or root for full access)"
+	@echo "  $(BLUE)Password:$(NC) wordpress (or rootpassword for root)"
+	@if command -v open >/dev/null 2>&1; then \
+		open http://localhost:8080; \
+	elif command -v xdg-open >/dev/null 2>&1; then \
+		xdg-open http://localhost:8080; \
+	else \
+		echo "$(YELLOW)Please open http://localhost:8080 in your browser$(NC)"; \
+	fi
 
 backup-db: ## Backup MySQL database
 	@echo "$(BLUE)💾 Creating database backup...$(NC)"

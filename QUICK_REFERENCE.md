@@ -20,6 +20,7 @@ make monitor            # Full health check
 ## 🌐 Access URLs
 - **Main Site (v1):** http://local-wp.com
 - **Secondary Site (v2):** http://local-wp.com/v2  
+- **phpMyAdmin:** <http://localhost:8080>  
 
 ## 🔧 Development
 ```bash
@@ -27,6 +28,7 @@ make logs               # View all logs
 make logs-php           # PHP logs only
 make shell-php          # Access PHP container
 make mysql-cli          # MySQL command line
+make phpmyadmin         # Open phpMyAdmin in browser
 ```
 
 ## 💾 Database Info

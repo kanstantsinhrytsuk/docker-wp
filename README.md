@@ -7,6 +7,7 @@ This Docker Compose setup provides a complete environment for running two WordPr
 - **MySQL 8.0** - Database server
 - **PHP 8.1-FPM** - PHP processor with WordPress extensions
 - **Nginx** - Web server and reverse proxy
+- **phpMyAdmin** - Web-based MySQL administration tool
 
 ## Site Structure
 
@@ -63,6 +64,7 @@ This Docker Compose setup provides a complete environment for running two WordPr
 
 - Main WordPress site: <http://local-wp.com>
 - Secondary WordPress site: <http://local-wp.com/v2>
+- phpMyAdmin: <http://localhost:8080>
 
 ## Available Make Commands
 
@@ -83,6 +85,7 @@ make clean              # Remove all containers and volumes
 make backup             # Create full backup (database + files)
 make install-wp         # Install WordPress on both sites
 make dev                # Complete development environment setup
+make phpmyadmin         # Open phpMyAdmin in browser
 ```
 
 ## Monitoring and Maintenance
@@ -104,6 +107,7 @@ make logs               # All service logs
 make logs-nginx         # Nginx-specific logs
 make logs-php           # PHP-specific logs
 make logs-mysql         # MySQL-specific logs
+make logs-phpmyadmin    # phpMyAdmin-specific logs
 ```
 
 ### Backup and Maintenance
@@ -122,6 +126,13 @@ make clean              # Clean up all Docker resources
 - Username: `wordpress`
 - Password: `wordpress`
 - Root Password: `rootpassword`
+
+### phpMyAdmin Access
+
+- URL: <http://localhost:8080>
+- Username: `wordpress` (or `root` for full admin access)
+- Password: `wordpress` (or `rootpassword` for root access)
+- Quick access: `make phpmyadmin`
 
 ## WordPress Configuration
 
@@ -157,12 +168,14 @@ define('DB_COLLATE', '');
 - **View logs:** `docker-compose logs [service_name]`
 - **Rebuild PHP container:** `docker-compose build php`
 - **Access MySQL CLI:** `docker-compose exec mysql mysql -u wordpress -p`
+- **Access phpMyAdmin:** `make phpmyadmin` or visit <http://localhost:8080>
 
 ## Port Mappings
 
 - **80** - Nginx (HTTP)
 - **443** - Nginx (HTTPS, if configured)
 - **3306** - MySQL
+- **8080** - phpMyAdmin
 
 ## Security Notes
 
