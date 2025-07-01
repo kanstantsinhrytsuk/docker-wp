@@ -1,0 +1,22 @@
+#!/bin/bash
+# Bash completion for WordPress Docker Makefile
+
+_make_wordpress_completion() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    
+    # Available make targets
+    opts="help setup build up down rebuild restart logs logs-nginx logs-php logs-mysql status info clean shell-nginx shell-php shell-mysql mysql-cli backup-db backup-files backup install-wp-v1 install-wp-v2 install-wp dev prod-check update start stop"
+    
+    if [[ ${cur} == * ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+}
+
+# Register completion function
+if command -v make >/dev/null 2>&1; then
+    complete -F _make_wordpress_completion make
+fi

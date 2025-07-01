@@ -1,0 +1,53 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_wp
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
+      MYSQL_USER: ${MYSQL_USER:-wordpress}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./configs/my.cnf:/etc/mysql/conf.d/custom.cnf
+    networks:
+      - wp_network
+    ports:
+      - "${MYSQL_PORT:-3307}:3306"
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    container_name: php_wp
+    restart: unless-stopped
+    volumes:
+      - ./website:/var/www/website
+      - ./configs/php.ini:/usr/local/etc/php/php.ini
+    networks:
+      - wp_network
+    depends_on:
+      - mysql
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_wp
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./website:/var/www/website
+      - ./configs/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - php
+    networks:
+      - wp_network
+
+volumes:
+  mysql_data:
+
+networks:
+  wp_network:
+    driver: bridge
